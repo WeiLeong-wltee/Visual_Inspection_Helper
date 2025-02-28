@@ -1,2 +1,2 @@
-# Visual_Inpsection_Helper
+# Visual_Inspection_Helper
 Go through a directory of images and add flags/notes/redshifts to a periodically savable csv file
