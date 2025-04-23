@@ -138,8 +138,8 @@ class vis_ins:
         self.e2 = Entry(self.content_frame)
         self.e1.grid(row=1, column=1, pady=2)
         self.e2.grid(row=2, column=1, pady=2)
-        self.e3 = Entry(self.content_frame) ### Cancelled ### Intended to comment but it will break for exit. Currently dont need.
-        self.e3.grid(row=4, column=1, pady=2) ### Cancelled ### Intended to comment but it will break for exit. Currently dont need.
+        self.e3 = Entry(self.content_frame) ### changed to ID input
+        self.e3.grid(row=5, column=0, pady=2) ### hanged to ID input
         self.e4 = Entry(self.content_frame) 
         self.e4.grid(row=3, column=1, pady=2)
         
@@ -150,11 +150,11 @@ class vis_ins:
         self.b2 = Button(self.content_frame, text="Next", width=20, command=self.next_pic)
         self.b2.grid(column=3, row=5, sticky='N')
         
-        self.b3 = Button(self.content_frame, text="Save", command=self.save) ### Cancelled ### Intended to comment but it will break for exit. Currently dont need.
-        self.b3.grid(column=0, row=5, padx=5) ### Cancelled ### Intended to comment but it will break for exit. Currently dont need.
+        self.b3 = Button(self.content_frame, text="Jump", command=self.jump_pic) ### changed to ID jump
+        self.b3.grid(column=1, row=5, padx=5) ### changed to ID jump
         
-        self.b4 = Button(self.content_frame,  text="Exit", command=self.exit)
-        self.b4.grid(column=1, row=5, padx=5)
+        #self.b4 = Button(self.content_frame,  text="Exit", command=self.exit)
+        #self.b4.grid(column=1, row=5, padx=5)
 
         ### Added ####
         # Instead of hardcoded 'autosave_comments.csv'
@@ -204,38 +204,40 @@ class vis_ins:
             self.e4.delete(0, 'end')
     ### >>> ADDED: Load comment from self.comment_df if available
 
+    ### >>> No longer needed due to WLT autosave functions
+    # def save(self):
+    #     self.flags[self.i] = self.e1.get()
+    #     self.notes[self.i] = self.e2.get()
+    #     self.redshift[self.i] = self.e4.get()
+    #     self.ids[self.i] = self.id_list[self.i_list[self.i]]
+    #     self.info_dict = {'ID':self.ids, 'Flag':self.flags, 'Notes':self.notes, 'Redshift':self.redshift}
+    #     self.pd_info = pd.DataFrame(self.info_dict)
+    #     if not self.e3.get():
+    #         self.savefilepath = asksaveasfile()
+    #     else:
+    #         self.savefilepath = self.e3.get()
+    #     self.pd_info.to_csv(self.savefilepath, index=False)
+    # def exit(self):        
+    #     self.flags[self.i] = self.e1.get()
+    #     self.notes[self.i] = self.e2.get()
+    #     self.redshift[self.i] = self.e4.get()
+    #     self.ids[self.i] = self.id_list[self.i_list[self.i]]
+    #     self.info_dict = {'ID':self.ids, 'Flag':self.flags, 'Notes':self.notes, 'Redshift':self.redshift}
+    #     self.pd_info = pd.DataFrame(self.info_dict)
+    #     if not self.e3.get():
+    #         self.savefilepath = asksaveasfile()
+    #     else:
+    #         self.savefilepath = self.e3.get()
+    #     self.pd_info.to_csv(self.savefilepath, index=False)
+    #     self.root.destroy()
 
-    def save(self):
-        self.flags[self.i] = self.e1.get()
-        self.notes[self.i] = self.e2.get()
-        self.redshift[self.i] = self.e4.get()
-        self.ids[self.i] = self.id_list[self.i_list[self.i]]
-        self.info_dict = {'ID':self.ids, 'Flag':self.flags, 'Notes':self.notes, 'Redshift':self.redshift}
-        self.pd_info = pd.DataFrame(self.info_dict)
-        if not self.e3.get():
-            self.savefilepath = asksaveasfile()
-        else:
-            self.savefilepath = self.e3.get()
-        self.pd_info.to_csv(self.savefilepath, index=False)
-    def exit(self):        
-        self.flags[self.i] = self.e1.get()
-        self.notes[self.i] = self.e2.get()
-        self.redshift[self.i] = self.e4.get()
-        self.ids[self.i] = self.id_list[self.i_list[self.i]]
-        self.info_dict = {'ID':self.ids, 'Flag':self.flags, 'Notes':self.notes, 'Redshift':self.redshift}
-        self.pd_info = pd.DataFrame(self.info_dict)
-        if not self.e3.get():
-            self.savefilepath = asksaveasfile()
-        else:
-            self.savefilepath = self.e3.get()
-        self.pd_info.to_csv(self.savefilepath, index=False)
-        self.root.destroy()
+
     def next_pic(self):
-        # global i
         self.flags[self.i] = self.e1.get()
         self.notes[self.i] = self.e2.get()
         self.redshift[self.i] = self.e4.get()
         self.ids[self.i] = self.id_list[self.i_list[self.i]]
+        self.e3.delete(0, 'end')
         ##### Added ####
         self.autosave_current_comment()  # <-- Save before switching
         ##### Added ####
@@ -266,11 +268,42 @@ class vis_ins:
             self.load_current_comments()  # <-- Load saved comment if exists
             ##### Added ####
 
+    def jump_pic(self):
+            self.autosave_current_comment()
+            
+            if self.e3.get() in self.id_list:
+                self.i = [i for i, x in enumerate(self.id_list) if x == self.e3.get()][0]#np.argwhere(self.id_list == self.e3.get())
+                self.e3.delete(0, 'end')
+
+                if self.i==len(self.i_list)-1:
+                    self.b2.configure(text="Last Image")
+                    self.b1.configure(text="Back")
+                elif self.i==0:
+                    self.b1.configure(text="First Image")
+                    self.b2.configure(text="Next")
+                else:
+                    self.b2.configure(text="Next")
+                    self.b1.configure(text="Back")
+
+                self.t1.configure(text=f"Source ID: {self.id_list[self.i_list[self.i]]}")
+                self.e1.delete(0, 'end')
+                self.e2.delete(0, 'end')
+                self.e4.delete(0, 'end')
+                self.load_current_comments()  # <-- Load saved comment if exists
+                self.new_image = convert_from_path(self.filepath+str(self.files[self.i_list[self.i]]))[0]
+                self.new_image = self.new_image.resize((int(self.new_image.width/2), int(self.new_image.height/2)), Image.LANCZOS)
+                self.new_image = ImageTk.PhotoImage(self.new_image, master=self.root)
+                self.imgl.config(image=self.new_image)
+                self.imgl.image = self.new_image
+            else:
+                self.e3.delete(0, 'end')
+                self.e3.insert(0, 'Invalid ID')
+
     def back_pic(self):
         ##### Added ####
         self.autosave_current_comment()  # <-- Save before switching
         ##### Added ####
-        # global i
+        self.e3.delete(0, 'end')
         if self.i==0:
             self.b1.configure(text="First Image")
         else:
