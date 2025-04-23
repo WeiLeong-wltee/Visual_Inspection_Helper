@@ -153,8 +153,8 @@ class vis_ins:
         self.b3 = Button(self.content_frame, text="Jump", command=self.jump_pic) ### changed to ID jump
         self.b3.grid(column=1, row=5, padx=5) ### changed to ID jump
         
-        #self.b4 = Button(self.content_frame,  text="Exit", command=self.exit)
-        #self.b4.grid(column=1, row=5, padx=5)
+        self.b4 = Button(self.content_frame,  text="Save", command=self.autosave_current_comment)
+        self.b4.grid(column=4, row=5, padx=5)
 
         ### Added ####
         # Instead of hardcoded 'autosave_comments.csv'
@@ -332,6 +332,16 @@ class vis_ins:
                 ##### Added ####
         
         
+# ### Adding class to create searchable dropdown menu https://coderslegacy.com/searchable-combobox-in-tkinter/
+# class SearchableComboBox:
+#     def __init__(self, options) -> None:
+
+
+
+
+
+
+
 def main(): 
     root = Tk()
     app = starting_window(root)
