@@ -162,6 +162,7 @@ class vis_ins:
         self.comment_df = self.load_existing_comments()
         self.load_current_comments()
         ### Added ####
+        self.ccb = SearchableComboBox(self.id_list, self.root, self.content_frame, self.e3)
 
     ### >>> ADDED: Load existing comments from CSV if it exists
     def load_existing_comments(self):
@@ -332,12 +333,64 @@ class vis_ins:
                 ##### Added ####
         
         
-# ### Adding class to create searchable dropdown menu https://coderslegacy.com/searchable-combobox-in-tkinter/
-# class SearchableComboBox:
-#     def __init__(self, options) -> None:
+### Adding class to create searchable dropdown menu https://coderslegacy.com/searchable-combobox-in-tkinter/
+class SearchableComboBox():
+    def __init__(self, opts, master, frame, jump_entry):
+        self.dropdown_id = None
+        self.options = opts
+        self.root = master
+        self.frame = frame
+        self.jump_entry=jump_entry
+        # text for entry field
+        wrapper = self.frame
 
+        self.entry = Entry(wrapper)
+        self.entry.bind("<KeyRelease>", self.on_entry_key)
+        self.entry.bind("<FocusIn>", self.show_dropdown)
+        self.entry.grid(column=0, row=5)
 
+        # dropdown button
+        #self.b1 = Button(wrapper, command=self.show_dropdown)
+        #self.b1.grid(column=5, row=1)
 
+        # listbox widget
+        self.lbox = Listbox(self.root)
+        self.lbox.bind("<<ListboxSelect>>", self.on_select)
+        for option in self.options:
+            self.lbox.insert(END, option)
+        
+    def on_entry_key(self, event):
+        typed_value = event.widget.get().strip().lower()
+        if not typed_value:
+            self.lbox.delete(0, END)
+            for option in self.options:
+                self.lbox.insert(END, option)
+        else:
+            self.lbox.delete(0,END)
+            filtered_options = [option for option in self.options if option.lower().startswith(typed_value)]
+            for option in filtered_options:
+                self.lbox.insert(END, option)
+        self.show_dropdown()
+
+    def on_select(self, event):
+        selected_index=self.lbox.curselection()
+        if selected_index:
+            selected_option = self.lbox.get(selected_index)
+            self.entry.delete(0, END)
+            self.entry.insert(0, selected_option)
+            self.jump_entry.delete(0, END)
+            self.jump_entry.insert(0,selected_option)
+
+    def show_dropdown(self, event=None):
+        self.lbox.place(in_=self.entry, x=0, rely=1, relwidth=1.0, anchor="nw")
+        self.lbox.lift()
+
+        if self.dropdown_id: # Cancel any old events
+            self.lbox.after_cancel(self.dropdown_id)
+        self.dropdown_id = self.lbox.after(2000, self.hide_dropdown)
+
+    def hide_dropdown(self):
+        self.lbox.place_forget()
 
 
 
