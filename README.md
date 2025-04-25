@@ -26,7 +26,7 @@ Your input will automatically save to the csv file when you click `Next` or `Bac
 > **Note: If you have entered information and then go back to a previous source,the information previously added will repopulate in the GUI based on the saved csv file.**
 
 You can additionally `Jump` to different sources using the searchable dropdown menu on the bottom left.  Clicking the entry box, the dropdown will populate with all sources in the directory.  When you start typing, the dropdown will be filtered to sources that begin with your search. (Note, the text must start with "ID"). Select the source you want from the dropdown menu and then click `Jump` to finish the selection. 
-> **Note: jumping around may make the csv file save out of order. I am working on fixing this after the last save.**
+> **Note: jumping around may make the csv file save out of order. Using the `Save` button instead of `Next` or `Back` to save the csv will reorder the file by ID.**
 
 Once you are at the end of the file list, the `Next` tab will turn to `Last Image` and will become obsolete.  You need to click it one more time (or the `Back` button) to save the information you've input for the last source.  We are working on a final `Save` button that will resort the csv to the original order.  
 

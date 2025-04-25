@@ -153,7 +153,7 @@ class vis_ins:
         self.b3 = Button(self.content_frame, text="Jump", command=self.jump_pic) ### changed to ID jump
         self.b3.grid(column=1, row=5, padx=5) ### changed to ID jump
         
-        self.b4 = Button(self.content_frame,  text="Save", command=self.autosave_current_comment)
+        self.b4 = Button(self.content_frame,  text="Save", command=self.ordered_save)
         self.b4.grid(column=4, row=5, padx=5)
 
         ### Added ####
@@ -187,6 +187,21 @@ class vis_ins:
         self.comment_df = pd.concat([self.comment_df, pd.DataFrame([new_data])], ignore_index=True)
         self.comment_df.to_csv(self.comment_data_path, index=False)
     ### >>> ADDED: Save current comment to DataFrame and file
+
+    def ordered_save(self):
+        current_id = self.id_list[self.i_list[self.i]]
+        new_data = {
+            "ID": current_id,
+            "Flag": self.e1.get(),
+            "Notes": self.e2.get(),
+            "Redshift": self.e4.get()
+        }
+
+        # Remove existing entry if exists
+        self.comment_df = self.comment_df[self.comment_df["ID"] != current_id]
+        self.comment_df = pd.concat([self.comment_df, pd.DataFrame([new_data])], ignore_index=True)
+        self.comment_df = self.comment_df.sort_values(by='ID').reset_index(drop=True)
+        self.comment_df.to_csv(self.comment_data_path, index=False)
 
     ### >>> ADDED: Load comment from self.comment_df if available
     def load_current_comments(self):
